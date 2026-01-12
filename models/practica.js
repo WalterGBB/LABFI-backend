@@ -30,7 +30,7 @@ const PracticaSchema = new mongoose.Schema({
     materiales: [                                     // Lista de materiales solicitados
         {
             descripcion: { type: String, required: true }, // Ej: "Micrómetro"
-            cantidad: { type: Number, required: true }     // Ej: 2
+            cantidad: { type: String, required: true }     // Ej: 2
         }
     ],
 
@@ -46,10 +46,13 @@ const PracticaSchema = new mongoose.Schema({
 // Campo virtual para devolver la fecha formateada
 PracticaSchema.virtual('fechaFormateada').get(function () {
     if (!this.fecha) return ''
+
     const f = new Date(this.fecha)
-    const dia = String(f.getDate()).padStart(2, '0')
-    const mes = String(f.getMonth() + 1).padStart(2, '0')
-    const anio = String(f.getFullYear()).slice(-2)
+
+    const dia = String(f.getUTCDate()).padStart(2, '0')
+    const mes = String(f.getUTCMonth() + 1).padStart(2, '0')
+    const anio = String(f.getUTCFullYear()).slice(-2)
+
     return `${dia}/${mes}/${anio}`
 })
 
