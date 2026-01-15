@@ -107,18 +107,21 @@ practicasRouter.delete('/:id', async (request, response, next) => {
     }
 })
 
-// ✅ Alternar el estado de la práctica (pendiente ↔ completada)
 practicasRouter.put('/:id', async (request, response, next) => {
     try {
-        const practica = await Practica.findById(request.params.id)
+        const { observaciones } = request.body
+
+        const practica = await Practica.findByIdAndUpdate(
+            request.params.id,
+            { observaciones },
+            { new: true }
+        )
+
         if (!practica) {
             return response.status(404).json({ error: 'Práctica no encontrada' })
         }
 
-        practica.estado = !practica.estado
-        const updatedPractica = await practica.save()
-
-        response.status(200).json(updatedPractica)
+        response.json(practica)
     } catch (error) {
         next(error)
     }
